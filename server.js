@@ -9,6 +9,13 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', './views');
 
+const todos = [
+   'Đi chợ',
+    'Nấu ăn',
+    'Đút gấu ăn',
+    'Đút gấu ăn 2',
+    'Học code trên CodersX'
+]
 // https://expressjs.com/en/starter/basic-routing.html
 app.get('/', (request, response) => {
   response.send('I love CodersX');
@@ -16,13 +23,18 @@ app.get('/', (request, response) => {
 
 app.get('/todos', (req, res) => {
   res.render('index', {
-    todos: [
-      'Đi chợ',
-      'Nấu ăn',
-      'Đút gấu ăn',
-      'Đút gấu ăn 2',
-      'Học code trên CodersX'
-    ]
+    todos: todos
+  })
+})
+
+app.get('/todos/search', (req, res) => {
+  let q = req.query.q;
+  let matchedTodos = todos.filter(todo => {
+    return todo.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+  })
+  
+  res.render('index', {
+    todos: matchedTodos
   })
 })
 

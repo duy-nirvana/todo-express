@@ -1,0 +1,23 @@
+{
+  "books": [
+    {
+      "name": "Harry Potter",
+      "description": "fndsaognioewag",
+      "id": "RxFnUE00_"
+    }
+  ],
+  "users": [
+    {
+      "name": "Trần Khánh Duy",
+      "id": "jhxbQbCof"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "Bz4cKvQDI",
+      "userId": "jhxbQbCof",
+      "bookId": "RxFnUE00_",
+      "isComplete": false
+    }
+  ]
+}

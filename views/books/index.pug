@@ -1,0 +1,17 @@
+form(action="/books/search" method="GET")
+  input(type="text" name="q")
+  button Search
+
+a(href="/books/create") Create a new book
+
+ul
+  each book in books
+    li
+      span= book.name
+      span &nbsp
+      a(href='/books/' + book.id + '/delete') Xóa
+      a(href='/books/' + book.id + '/view') Xem
+      a(href='/books/' + book.id + '/update') Sửa
+
+    
+  

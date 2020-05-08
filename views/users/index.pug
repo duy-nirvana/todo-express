@@ -1,0 +1,17 @@
+form(action="/users/search" method="GET")
+  input(type="text" name="q")
+  button Search
+
+a(href="/users/create") Create a new user
+
+ul
+  each user in users
+    li
+      span= user.name
+      span &nbsp
+      a(href='/users/' + user.id + '/delete') Xóa
+      a(href='/users/' + user.id + '/view') Xem
+      a(href='/users/' + user.id + '/update') Sửa
+
+    
+  

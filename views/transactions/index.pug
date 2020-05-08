@@ -1,0 +1,20 @@
+h1 Transactions
+
+a(href="/transactions/create") Create transaction
+br
+a(href="/") Home
+
+table
+  tr
+    th User
+    th Book
+  each transaction in transactions
+    tr
+      td= transaction.user
+      td= transaction.book
+      if (transaction.isComplete === false)
+        td 
+          a(href="/transactions/" + transaction.id + "/complete") Hoàn thành
+    
+      
+      

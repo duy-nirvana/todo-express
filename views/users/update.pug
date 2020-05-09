@@ -1,8 +1,14 @@
-h1 Update name user
+extends ../../layouts/common.pug
 
-form(action="/users/update", method="POST")
-  lable New name
-  br
-  input(type="hidden", name="id", value=id)
-  input(type="text", name="name")
-  button Update
+block content
+  h1 Update username
+
+  form(action="/users/update", method="POST")
+    lable New name
+    br
+    input(type="hidden", name="id", value=id)
+    input(type="text", name="name")
+    button Update
+    
+    div
+      a(href="/users") Return

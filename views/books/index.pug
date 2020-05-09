@@ -1,17 +1,27 @@
-form(action="/books/search" method="GET")
-  input(type="text" name="q")
-  button Search
+extends ../../layouts/common
 
-a(href="/books/create") Create a new book
+block content
+  form.form-group.d-flex(action="/books/search" method="GET")
+    input.form-control(type="text" name="q")
+    button.ml-auto Search
+    
+  div.mb-4
+    a(href="/books/create") Create a new book
 
-ul
-  each book in books
-    li
-      span= book.name
-      span &nbsp
-      a(href='/books/' + book.id + '/delete') Xóa
-      a(href='/books/' + book.id + '/view') Xem
-      a(href='/books/' + book.id + '/update') Sửa
-
+  table.table
+      tr
+        th Name
+        th 
+        th
+        th
+      each book in books
+        tr
+          td= book.name
+          td 
+            a(href="/books/" + book.id + "/delete") Xóa
+          td 
+            a(href="/books/" + book.id + "/update") Sửa
+          td 
+            a(href="/books/" + book.id + "/view") Xem
     
   

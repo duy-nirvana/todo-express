@@ -1,8 +1,11 @@
-h1 Create new book
+extends ../../layouts/common
 
-form(action="/books/create" method="POST")
-  h1 Name
-  input(type="text" name="name")
-  h1 Description
-  input(type="text" name="description")
-  button Create
+block content
+  h1 Create new book
+
+  form(action="/books/create" method="POST")
+    h1 Name
+    input(type="text" name="name")
+    h1 Description
+    input(type="text" name="description")
+    button Create

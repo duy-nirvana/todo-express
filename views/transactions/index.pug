@@ -1,20 +1,25 @@
-h1 Transactions
+extends ../../layouts/common
 
-a(href="/transactions/create") Create transaction
-br
-a(href="/") Home
+block content
+  h1 Transactions
 
-table
-  tr
-    th User
-    th Book
-  each transaction in transactions
+  a(href="/transactions/create") Create transaction
+  br
+  a(href="/") Home
+
+  table
     tr
-      td= transaction.user
-      td= transaction.book
-      if (transaction.isComplete === false)
-        td 
-          a(href="/transactions/" + transaction.id + "/complete") Hoàn thành
-    
-      
-      
+      th User
+      th Book
+      th Status
+    each transaction in transactions
+      tr
+        td= transaction.user
+        td= transaction.book
+        if (transaction.isComplete === false)
+          td 
+            a(href="/transactions/" + transaction.id + "/complete") Hoàn thành
+        else 
+          td
+            div Đã hoàn thành
+

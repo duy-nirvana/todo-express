@@ -8,7 +8,7 @@ module.exports.index = (req, res) => {
     var userId = item.userId;
     var bookId = item.bookId;
     lists.push({
-      id: shortid.generate(),
+      id: item.id,
       user: db.get('users').find({ id: userId }).value().name,
       book: db.get('books').find({ id: bookId }).value().name,
       isComplete: item.isComplete
@@ -43,9 +43,9 @@ module.exports.postCreate = (req, res) => {
 };
 
 module.exports.complete = (req, res) => {
-  db.get('transactions')
-  .find({ id: req.params.id})
-  .assign({ isComplete: true })
-  .write();
+  let id = req.params.id;
+  if(db.get('transactions').find({id})) {
+    db.get('transactions').find({id}).assign({isComplete: true}).write();
+  }
   res.redirect('/transactions');
 };

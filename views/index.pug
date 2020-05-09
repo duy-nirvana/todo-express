@@ -1,7 +1,11 @@
-h1 
-  a(href="/books") Books
+extends ../layouts/common.pug
+block content
+  .container
+    .row
+     .col-12
+        a.badge.badge-primary.p-4(href='/books') Books
+     .col-12
+        a.badge.badge-secondary.p-4(href='/users') Users
+     .col-12
+        a.badge.badge-success.p-4(href='/transactions') Transactions
 
-h1
-  a(href="/users") Users
-h1
-  a(href="/transactions") Transaction

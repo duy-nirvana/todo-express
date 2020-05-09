@@ -1,6 +1,21 @@
-h1 Create new user
+extends ../../layouts/common.pug
 
-form(action="/users/create" method="POST")
-  h1 Name
-  input(type="text" name="name")
-  button Create
+block content
+  h1 Create new user
+  
+  if errors
+    each error in errors
+      .alert.alert-danger= error
+  
+  form(action="/users/create" method="POST")
+    .form-group
+      label(for="name") Name
+      input#name.form-control(type="text" name="name" value=values ? values.name : '')
+      
+    .form-group
+      label(for="phone") Phone
+      input#phone.form-control(type="text" name="phone" value=values? values.phone : '')
+    button Create
+    
+  div
+    a(href="/users") Return

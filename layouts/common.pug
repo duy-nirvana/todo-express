@@ -8,6 +8,8 @@ html
   body
     nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-4
       a.navbar-brand(href='/') CodersX
+      if user
+        p= user.name
       button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavAltMarkup', aria-controls='navbarNavAltMarkup', aria-expanded='false', aria-label='Toggle navigation')
         span.navbar-toggler-icon
       #navbarNavAltMarkup.collapse.navbar-collapse
@@ -15,5 +17,6 @@ html
           a.nav-item.nav-link(href='/books') Books
           a.nav-item.nav-link(href='/users') Users
           a.nav-item.nav-link(href='/transactions') Transactions
-          
-    block content
+      
+    .container.pt-5
+      block content

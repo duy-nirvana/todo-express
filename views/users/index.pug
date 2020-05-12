@@ -1,0 +1,27 @@
+extends ../../layouts/common.pug
+
+block content
+  form.form-group.d-flex(action="/users/search" method="GET" )
+    input.form-control(type="text" name="q" )
+    button.ml-auto Search
+
+  div.mb-4
+    a(href="/users/create") Create a new user
+
+  table.table
+    tr
+      th Name
+      th Phone
+      th
+      th Action
+      th
+    each user in users
+      tr
+        td= user.name
+        td= user.phone
+        td 
+          a(href="/users/" + user.id + "/delete") Xóa
+        td 
+          a(href="/users/" + user.id + "/update") Sửa
+        td 
+          a(href="/users/" + user.id + "/view") Xem

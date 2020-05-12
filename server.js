@@ -3,40 +3,38 @@
 
 // we've started you off with Express (https://expressjs.com/)
 // but feel free to use whatever libraries or frameworks you'd like through `package.json`.
-const express = require('express');
+require('dotenv').config()
+const express = require("express");
+const cookieParser = require('cookie-parser');
+
+const bookRoute = require('./routes/book.route');
+const userRoute = require('./routes/user.route');
+const transactionRoute = require('./routes/transaction.route');
+const authRoute = require('./routes/auth.route');
+
+const authMiddleware = require('./middlewares/auth.middleware');
+
 const app = express();
+app.set("view engine", "pug");
+app.set("views", "./views");
 
-app.set('view engine', 'pug');
-app.set('views', './views');
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-const todos = [
-   'Đi chợ',
-    'Nấu ăn',
-    'Đút gấu ăn',
-    'Đút gấu ăn 2',
-    'Học code trên CodersX'
-]
 // https://expressjs.com/en/starter/basic-routing.html
-app.get('/', (request, response) => {
-  response.send('I love CodersX');
+app.get("/", (req, res) => { 
+  
+
+  res.render('index');
 });
 
-app.get('/todos', (req, res) => {
-  res.render('index', {
-    todos: todos
-  })
-})
+app.use(cookieParser(process.env.SESSION_SECRET)) // use to read format cookie
+app.use('/books', bookRoute)
+app.use('/users', authMiddleware.requireAuth, userRoute)
+app.use('/transactions', authMiddleware.requireAuth, transactionRoute);
+app.use('/auth', authRoute);
 
-app.get('/todos/search', (req, res) => {
-  let q = req.query.q;
-  let matchedTodos = todos.filter(todo => {
-    return todo.toLowerCase().indexOf(q.toLowerCase()) !== -1;
-  })
-  
-  res.render('index', {
-    todos: matchedTodos
-  })
-})
+
 
 // listen for requests :)
 app.listen(process.env.PORT, () => {

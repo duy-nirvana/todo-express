@@ -2,21 +2,26 @@ const shortid = require('shortid');
 const db = require('../db');
 
 module.exports.index = (req, res) => {
-  var transactions = db.get('transactions').value();
-  var lists = [];
-  for (var item of transactions) {
-    var userId = item.userId;
-    var bookId = item.bookId;
+  //let user = db.get('users').find({id: parseInt(req.signedCookies.userId)}).value();
+  let transactions = db.get('transactions').value();
+  let lists = [];
+  for (let item of transactions) {
+    let userId = item.userId;
+    let bookId = item.bookId;
     lists.push({
       id: item.id,
       user: db.get('users').find({ id: userId }).value().name,
-      book: db.get('books').find({ id: bookId }).value().name,
+      book: db.get('books').find({ id: bookId }).value().title,
       isComplete: item.isComplete
     })
   }
+  console.log(lists)
+  
+  
   res.render('transactions/index', {
     transactions: lists
   })
+  console.log(transactions)
 }
 
 module.exports.create = (req, res) => {

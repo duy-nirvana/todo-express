@@ -1,5 +1,12 @@
 const db = require('../db');
 const shortid = require('shortid');
+const cloudinary = require("cloudinary");
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET 
+});
 
 module.exports.index = (req, res) => {
   res.render("users/index", {
@@ -41,14 +48,20 @@ module.exports.create = (req, res) => {
   res.render('users/create')
 }
 
-module.exports.postCreate = (req, res) => {
-  req.body.id = shortid.generate();
-  
-  
+module.exports.postCreate = async (req, res) => {
+  let name = req.body.name;
+  let phone = req.body.phone;
+  let path = req.file.path;
+  let file = await cloudinary.uploader.upload(path);
   db.get("users")
-    .push(req.body)
+    .push({
+      id: shortid.generate(),
+      name: name,
+      phone: phone,
+      avatar: file.url,
+      isAdmin: false
+    })
     .write();
-
   res.redirect("/users");
 }
 

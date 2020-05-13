@@ -613,48 +613,46 @@
       "name": "Chloe",
       "id": "e1iQhQ8Jo",
       "email": "duy1@gmail.com",
-      "password": "123456"
+      "password": "123456",
+      "isAdmin": false
     },
     {
       "name": "duy",
       "id": "oTEWzm0Ys",
       "email": "duy2@gmail.com",
-      "password": "123456"
+      "password": "123456",
+      "isAdmin": false
     },
     {
       "name": "duyhime",
       "phone": "123456789",
-      "id": "EtiQ_We1C"
+      "id": "EtiQ_We1C",
+      "isAdmin": false
     },
     {
       "name": "Trần Khánh Duy",
       "phone": "111111",
-      "id": "I6pNVSQ_T"
+      "id": "I6pNVSQ_T",
+      "isAdmin": false
     }
   ],
   "transactions": [
     {
-      "id": "yI11epXUk",
+      "id": "N2P4TnbpC",
       "userId": "jhxbQbCof",
-      "bookId": "RxFnUE00_",
+      "bookId": "75a48888-aeaa-4210-a2de-8d434ed207a9",
       "isComplete": true
     },
     {
-      "id": "CqLbaWEYN",
+      "id": "ezX0VPM2X",
       "userId": "e1iQhQ8Jo",
-      "bookId": "BV-3yITeK",
+      "bookId": "31be7df5-08f6-4ee7-8819-9debb892ca6a",
       "isComplete": true
     },
     {
-      "id": "ZqBOJ27N8",
-      "userId": "e1iQhQ8Jo",
-      "bookId": "RxFnUE00_",
-      "isComplete": true
-    },
-    {
-      "id": "83Kuo0Fny",
-      "userId": "EtiQ_We1C",
-      "bookId": "BV-3yITeK",
+      "id": "KbHOSexGw",
+      "userId": "jhxbQbCof",
+      "bookId": "31be7df5-08f6-4ee7-8819-9debb892ca6a",
       "isComplete": false
     }
   ]

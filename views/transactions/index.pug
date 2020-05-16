@@ -1,25 +1,24 @@
-extends ../../layouts/common
+extends ../layouts/common.pug
 
 block content
-  h1 Transactions
+  h1 Transaction list
 
-  a(href="/transactions/create") Create transaction
-  br
-  a(href="/") Home
-
-  table
+  table.table
     tr
-      th User
+      th User borrow
       th Book
-      th Status
+      th
+      th
     each transaction in transactions
       tr
         td= transaction.user
         td= transaction.book
-        if (transaction.isComplete === false)
+        if (transaction.isComplete == false)
           td 
-            a(href="/transactions/" + transaction.id + "/complete") Hoàn thành
+            a(href="/transactions/" + transaction.id + "/complete") Trả sách nè
         else 
-          td
-            div Đã hoàn thành
+          td Đã trả rồi nhé, bớt đòi
+        //td 
+          a(href="/transactions/" + transaction "/update") Update
 
+  a.btn.btn-primary(href="/transactions/create") New

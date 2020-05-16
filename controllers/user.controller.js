@@ -1,71 +1,62 @@
-const db = require('../db');
-const shortid = require('shortid');
+var cloudinary = require("cloudinary");
+const mongoose = require('mongoose');
+const userModel = require('../models/users');
 
-module.exports.index = (req, res) => {
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+});
+
+module.exports.index = async (req, res) => {
   res.render("users/index", {
-    users: db.get("users").value()
+    users: await userModel.find()
   });
-}
-
-module.exports.search = (req, res) => {
-  let q = req.query.q;
-  let matchedUsers = db
-    .get("users")
-    .value()
-    .filter(user => {
-      return user.name.toLowerCase().indexOf(q.toLowerCase()) !== -1;
-    });
-
-  res.render("users/index", {
-    users: matchedUsers
-  });
-}
-
-module.exports.delete = (req, res) => {
-  let id = req.params.id;
-  
-  let user = db.get('users').remove({ id: id }).write();
-  res.redirect('/users');
-}
-
-module.exports.view = (req, res) => {
-  let id = req.params.id;
-  
-  let user = db.get('users').find({ id: id }).value();
-  res.render('users/view', {
-    user: user
-  });
-}
+};
 
 module.exports.create = (req, res) => {
-  res.render('users/create')
-}
+  res.render("users/create");
+};
 
-module.exports.postCreate = (req, res) => {
-  req.body.id = shortid.generate();
-  
-  
-  db.get("users")
-    .push(req.body)
-    .write();
-
+module.exports.postCreate = async (req, res) => {
+  var file = await cloudinary.uploader.upload(req.file.path);
+  var newUser = new userModel({
+    name: req.body.name,
+    phone: req.body.phone,
+    email: req.body.email,
+    password: req.body.password,
+    avatar: file.url,
+    isAdmin: false
+  })
+  await newUser.save();
   res.redirect("/users");
-}
+};
 
-module.exports.update = function(req, res) {
-  var id = req.params.id;
+module.exports.delete = async (req, res) => {
+  await userModel.remove({ _id: req.params.id }).exec();
+  res.redirect("/users");
+};
+
+module.exports.update = async (req, res) => {
+  var user = await userModel.findOne({ _id: req.params.id });
   res.render("users/update", {
-    id: id
+    user: user
   });
-}
+};
 
-module.exports.postUpdate = function(req, res) {
-  var id = req.body.id;
+module.exports.postUpdate = async (req, res) => {
   var name = req.body.name;
-    db.get("users")
-      .find({ id: id })
-      .assign({ name: name })
-      .write();
-
-    res.redirect("/users");
-}
+  var phone = req.body.phone;
+  var file = await cloudinary.uploader.upload(req.file.path);
+  await userModel.update(
+    { _id: req.params.id }, 
+    { 
+      $set: { 
+        name: name, 
+        phone: phone, 
+        avatar: file.url 
+      }
+    }
+  ).exec()
+  res.redirect("/users");
+};

@@ -1,0 +1,24 @@
+extends ../layouts/common.pug
+
+block content
+  h1 Cart
+  
+  table.table
+    tr
+      th Title
+      th Cover
+      th Description
+      th Delete
+    - var id = ''
+    each book in books
+      - id = id + book.id + "+"
+      tr
+        td= book.title
+        td
+          img(src=book.image, width="64")
+        td= book.description
+        td 
+          a(href="/cart/" + book.id + "/delete") Delete
+    - id = id.substring(0, id.length - 1)
+  .d-flex.justify-content-end
+    a.btn.btn-warning(href="/cart/brown?q=" + id) Brown

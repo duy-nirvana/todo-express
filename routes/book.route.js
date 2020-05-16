@@ -1,24 +1,21 @@
-const express = require("express");
-const router = express.Router();
-const shortid = require('shortid');
+const express = require('express');
+const controller = require('../controllers/book.controller');
+const multer = require("multer");
 
-const db = require('../db');
-const controller = require('../controllers/book.controller')
+const upload = multer({ dest: "./public/uploads/" });
+
+const router = express.Router();
 
 router.get("/", controller.index);
-router.get("/search", controller.search);
 
-router.get("/:id/delete", controller.delete)
+router.get("/create", controller.create);
 
-router.get("/:id/view", controller.view)
+router.post("/create", upload.single('image'), controller.postCreate);
 
-
-router.get("/create", controller.create)
-
-router.post("/create", controller.postCreate);
+router.get("/:id/delete", controller.delete);
 
 router.get("/:id/update", controller.update);
 
-router.post("/update", controller.postUpdate);
+router.post("/:id/update", upload.single('image'), controller.postUpdate);
 
 module.exports = router;

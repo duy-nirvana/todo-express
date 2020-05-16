@@ -1,42 +1,63 @@
-// server.js
-// where your node app starts
-
-// we've started you off with Express (https://expressjs.com/)
-// but feel free to use whatever libraries or frameworks you'd like through `package.json`.
-require('dotenv').config()
 const express = require("express");
+const bookRoute = require("./routes/book.route");
+const userRoute = require("./routes/user.route");
+const transactionRoute = require("./routes/transaction.route");
+const authRoute = require("./routes/auth.route");
+const cartRoute = require('./routes/cart.route');
+const apiBookRoute = require('./api/routes/book.route');
+const apiTransactionRoute = require('./api/routes/transaction.route');
+const connect = require('./DB/connection');
+
+const middlewareTransaction = require("./middlewares/transaction.middleware");
+const middlewareAuth = require("./middlewares/auth.middleware");
+const sessionMiddleware = require('./middlewares/session.middleware');
+
+
+
 const cookieParser = require('cookie-parser');
 
-const bookRoute = require('./routes/book.route');
-const userRoute = require('./routes/user.route');
-const transactionRoute = require('./routes/transaction.route');
-const authRoute = require('./routes/auth.route');
-
-const authMiddleware = require('./middlewares/auth.middleware');
+connect().then(() => {
+  console.log('Connect success');
+}).catch(console.log);
 
 const app = express();
-app.set("view engine", "pug");
-app.set("views", "./views");
 
+// make all the files in 'public' available
+// https://expressjs.com/en/starter/static-files.html
+app.use(express.static("public"));
 app.use(express.json()); // for parsing application/json
-app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser('abc1244'));
+app.use(sessionMiddleware);
 
-// https://expressjs.com/en/starter/basic-routing.html
-app.get("/", (req, res) => { 
-  
+app.set('views', './views');
+app.set('view engine', 'pug');
 
+// app.use((req, res, next) => {
+//   if(!req.cookies.count) {
+//     res.cookie('count', 1);
+//   } else {
+//     var count = req.cookies.count;
+//     count++;  
+//     res.cookie('count', count);
+//   }
+//   console.log(req.cookies.count);
+//   next();
+// });
+
+app.get('/', (req, res) => {
   res.render('index');
-});
-
-app.use(cookieParser(process.env.SESSION_SECRET)) // use to read format cookie
-app.use('/books', bookRoute)
-app.use('/users', authMiddleware.requireAuth, userRoute)
-app.use('/transactions', authMiddleware.requireAuth, transactionRoute);
+})
+app.use('/books', bookRoute);
+app.use('/users', userRoute);
+app.use('/transactions', middlewareAuth.requireAuth, middlewareTransaction.complete, transactionRoute);
 app.use('/auth', authRoute);
-
+app.use('/cart', middlewareAuth.requireAuth, cartRoute);
+app.use('/api/book', apiBookRoute);
+app.use('/api/transaction', apiTransactionRoute);
 
 
 // listen for requests :)
-app.listen(process.env.PORT, () => {
-  console.log("Server listening on port " + process.env.PORT);
+const listener = app.listen(process.env.PORT, () => {
+  console.log("Your app is listening on port " + listener.address().port);
 });

@@ -1,11 +1,20 @@
-extends ../../layouts/common
+extends ../layouts/common.pug
 
-block content
-  h1 Update title book
+block content  
+  h1 Update a book
 
-  form(action="/books/update", method="POST")
-    lable New title
-    br
-    input(type="hidden", name="id", value=id)
-    input(type="text", name="name")
-    button Update
+  form(method="POST", action="/books/" + book.id + "/update", enctype="multipart/form-data")
+    img(src='/' + book.image)
+    .form-group
+      span Title: 
+      span= book.title
+    .form-group
+      label(for="title") New title: 
+      input.form-control(type="text", name="title")
+    .form-group
+      label(for="description") Description: 
+      input.form-control(type="text", name="description")
+    .form-group
+      label(for='image') Sửa image
+      input#avatar.form-control-file(type='file', name='image')
+    button.btn.btn-primary Update

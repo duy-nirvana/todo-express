@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const URL = "mongodb+srv://" + process.env.mongodb_username + ":" + process.env.mongodb_password +"@cluster0-kuqyf.mongodb.net/library?retryWrites=true&w=majority"
+const URL = "mongodb://localhost/express"
 
 const connect = async () => {
   await mongoose.connect(URL,

@@ -1,25 +1,13 @@
-module.exports.postCreate = (req, res, next) => {
-  let errors = [];
-  
-  if (!req.body.name) {
-    errors.push('Name is required');
-  }
-  
-  if (!req.body.phone) {
-    errors.push('Phone is required');
-  }
-  
-  if (req.body.name.length > 30) {
-    errors.push('Your name is too long!') 
-  }
-  
-  if (errors.length) {
+module.exports.postCreate = (req, res, next)=> {
+  console.log(req.body.name);
+  var name = req.body.name;
+  var error = '';
+  if (name.length > 30) {
+    error = 'Name must be less than 30 characters'
     res.render('users/create', {
-      errors: errors,
-      values: req.body
-    }) 
+      error: error
+    })
     return;
   }
-  
   next();
 }

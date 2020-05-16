@@ -1,79 +1,66 @@
-const db = require('../db');
-const shortid = require('shortid');
+const mongoose = require('mongoose');
+const bookModel = require('../models/books');
 
-module.exports.index = (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const perPage = 8;
+module.exports.index = async (req, res) => {
+  var page = parseInt(req.query.page) || 1; // n - số thứ tự trang.
+  var perPage = 8; // x - số lượng sản phẩm trong 1 trang.
+
+  var start = (page - 1) * perPage;
+  var end = page * perPage;
   
-  let start = (page - 1) * perPage;
-  let end = page * perPage;
-  
-  var numberOfPages = Math.ceil(db.get('books').value().length / 8);
-  var books = db.get('books').value().slice(start, end);
+  var books = [];
+  var books = books.concat(await bookModel.find())
+  books.slice(start, end);
+  var numberOfPages = Math.ceil(books.length / 8);
   res.render('books/index', {
     books: books,
     numberOfPages: numberOfPages
   })
-};
-
-module.exports.search = (req, res) => {
-  let q = req.query.q;
-  let matchedBooks = db
-    .get("books")
-    .value()
-    .filter(book => {
-      return book.name.toLowerCase().indexOf(q.toLowerCase()) !== -1;
-    });
-
-  res.render("books/index", {
-    books: matchedBooks
-  });
-}
-
-module.exports.delete = (req, res) => {
-  let id = req.params.id;
-  
-  let book = db.get('books').remove({ id: id }).write();
-  res.redirect('/books');
-}
-
-module.exports.view = (req, res) => {
-  let id = req.params.id;
-  
-  let book = db.get('books').find({ id: id }).value();
-  res.render('books/view', {
-    book: book
-  });
 }
 
 module.exports.create = (req, res) => {
-  res.render('books/create')
+  res.render('books/create');
 }
 
-module.exports.postCreate = (req, res) => {
-  req.body.id = shortid.generate();
-  
-  db.get("books")
-    .push(req.body)
-    .write();
-
-  res.redirect("/books");
-}
-
-module.exports.update = function(req, res) {
-  var id = req.params.id;
-  res.render("books/update", {
-    id: id
+module.exports.postCreate = async(req, res) => {
+  var title = req.body.title;
+  var description = req.body.description;
+  var image = req.file.path.split('/').slice(1).join('/');
+  var newBook = new bookModel({
+    title: title,
+    description: description,
+    image: image
   });
+  await newBook.save();
+  res.redirect('/books');
 }
 
-module.exports.postUpdate = function(req, res) {
-  var id = req.body.id;
-  var name = req.body.name;
-    db.get("books")
-      .find({ id: id })
-      .assign({ name: name })
-      .write();
-
-    res.redirect("/books");
+module.exports.delete = async(req, res) => {
+  await bookModel.remove({ _id: req.params.id }).exec();
+  res.redirect('/books');
 }
+
+module.exports.update = async(req, res) => {
+  var book = await bookModel.findOne({ _id: req.params.id });
+  res.render('books/update', {
+    book: book
+  })
+}
+
+module.exports.postUpdate = async (req, res) => {
+  var title = req.body.title;
+  var description = req.body.description;
+  var image = req.file.path.split('/').slice(1).join('/');
+  await bookModel.update(
+    { _id: req.params.id }, 
+    { 
+      $set: { 
+        title: title, 
+        description: description, 
+        image: image 
+      }
+    }
+  ).exec()
+  res.redirect('/books');
+}
+

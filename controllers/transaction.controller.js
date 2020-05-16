@@ -1,56 +1,54 @@
-const shortid = require('shortid');
-const db = require('../db');
+const mongoose = require('mongoose');
+const transactionModel = require('../models/transactions');
+const userModel = require('../models/users')
+const bookModel = require('../models/books')
 
-module.exports.index = (req, res) => {
-  //let user = db.get('users').find({id: parseInt(req.signedCookies.userId)}).value();
-  let transactions = db.get('transactions').value();
-  let lists = [];
-  for (let item of transactions) {
-    let userId = item.userId;
-    let bookId = item.bookId;
+module.exports.index = async (req, res) => {
+  var user = await userModel.findOne({ _id: req.signedCookies.userId });
+  var transactions = [];
+  if (user.isAdmin) {
+     transactions = await transactionModel.find();
+  } else {
+     transactions = await transactionModel.find({ userId: user.id });
+  }
+  var lists = [];
+  for (var item of transactions) {
+    var user = await userModel.findOne({ _id: item.userId });
+    var book = await bookModel.findOne({ _id: item.bookId });
     lists.push({
       id: item.id,
-      user: db.get('users').find({ id: userId }).value().name,
-      book: db.get('books').find({ id: bookId }).value().title,
+      user: user.name,
+      book: book.title,
       isComplete: item.isComplete
     })
   }
-  console.log(lists)
-  
   
   res.render('transactions/index', {
     transactions: lists
   })
-  console.log(transactions)
 }
 
-module.exports.create = (req, res) => {
+module.exports.create = async (req, res) => {
+  var users = await userModel.find();
+  var books = await bookModel.find();
   res.render('transactions/create', {
-    users: db.get('users').value(),
-    books: db.get('books').value()
+    users: users,
+    books: books
   });
 }
 
-module.exports.postCreate = (req, res) => {
-  let user = req.body.userSelect;
-  let book = req.body.bookSelect;
-  let id = shortid.generate();
+module.exports.postCreate = async (req, res) => {
+  var user = await userModel.findOne({ name: req.body.userSelect });
+  var book = await bookModel.findOne({ title: req.body.bookSelect });
   
-  console.log(user, book);
-  console.log(req.body.userSelect, req.body.bookSelect);
-  db.get('transactions').push({
-    id: id,
-    userId: db.get('users').find({ name: user }).value().id,
-    bookId: db.get('books').find({ name: book }).value().id,
+  transactionModel.create({
+    userId: user.id,
+    bookId: book.id,
     isComplete: false
   }).write()
   res.redirect('/transactions');
 };
 
-module.exports.complete = (req, res) => {
-  let id = req.params.id;
-  if(db.get('transactions').find({id})) {
-    db.get('transactions').find({id}).assign({isComplete: true}).write();
-  }
+module.exports.complete = (req, res) => { 
   res.redirect('/transactions');
 };

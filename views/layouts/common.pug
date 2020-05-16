@@ -1,0 +1,23 @@
+html
+  head
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
+    link(rel="stylesheet", href="/custom.css")
+  body
+    nav.navbar.navbar-expand-sm.navbar-light.bg-light
+      a.navbar-brand(href='/')
+        img(src="/w6.png")
+      #navbarNav.collapse.navbar-collapse
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href='/') Home
+          li.nav-item
+            a.nav-link(href='/users') Users
+          li.nav-item
+            a.nav-link(href='/books') Books
+          li.nav-item
+            a.nav-link(href='/transactions') Transactions
+          li.nav-item
+            a.nav-link(href='/cart') Cart 
+              span= '(' + numberInCart + ')'
+    .container.pt-5
+      block content

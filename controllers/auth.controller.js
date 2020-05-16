@@ -1,9 +1,9 @@
-const db = require("../db");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const md5 = require("md5");
-const sgMail = require('@sendgrid/mail');
-
+const sgMail = require("@sendgrid/mail");
+const mongoose = require('mongoose');
+const userModel = require('../models/users');
 
 module.exports.login = (req, res) => {
   if (!req.cookies.wrongLoginCount) {
@@ -12,17 +12,15 @@ module.exports.login = (req, res) => {
   res.render("auth/login");
 };
 
-
-module.exports.postLogin = (req, res, next) => {
+module.exports.postLogin = async (req, res, next) => {
   if (parseInt(req.cookies.wrongLoginCount) >= 3) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
     const msg = {
       to: req.body.email,
-      from: "trankhanhduy8599@gmail.com",
-      subject: "Warning Login",
-      text: "Sonmeone try to login with your email",
-      html: "<h1>Sonmeone try to login with your email</h1>"
+      from: "nguyenngocnhuquynh.141999@gmail.com",
+      subject: "Cảnh báo đăng nhập",
+      text: "Ai đó đang đăng nhập vào tài khoản của bạn",
+      html: "<strong>Ai đó đang đăng nhập vào tài khoản của bạn</strong>"
     };
     //ES6
     sgMail.send(msg).then(
@@ -41,13 +39,9 @@ module.exports.postLogin = (req, res, next) => {
     });
     return;
   }
-  
   var email = req.body.email;
   var password = req.body.password;
-  var user = db
-    .get("users")
-    .find({ email: email })
-    .value();
+  var user = await userModel.findOne({ email: email});
 
   if (!user) {
     res.render("auth/login", {
@@ -58,6 +52,7 @@ module.exports.postLogin = (req, res, next) => {
   }
 
   var result = bcrypt.compareSync(req.body.password, user.password);
+  console.log(result);
   if (!result) {
     var wrongLoginCount = parseInt(req.cookies.wrongLoginCount);
     wrongLoginCount++;

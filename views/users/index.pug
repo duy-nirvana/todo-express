@@ -1,12 +1,7 @@
-extends ../../layouts/common.pug
+extends ../layouts/common.pug
 
 block content
-  form.form-group.d-flex(action="/users/search" method="GET" )
-    input.form-control(type="text" name="q" )
-    button.ml-auto Search
-
-  div.mb-4
-    a(href="/users/create") Create a new user
+  h1 User list
 
   table.table
     tr
@@ -14,7 +9,6 @@ block content
       th Phone
       th Avatar
       th
-      th Action
       th
     each user in users
       tr
@@ -26,8 +20,8 @@ block content
           else
             img(src=user.avatar, width='32')
         td 
-          a(href="/users/" + user.id + "/delete") Xóa
+          a(href="/users/" + user.id + "/delete") Delete
         td 
-          a(href="/users/" + user.id + "/update") Sửa
-        td 
-          a(href="/users/" + user.id + "/view") Xem
+          a(href="/users/" + user.id + "/update") Update
+
+  a.btn.btn-primary(href="/users/create") New
